@@ -1,0 +1,4 @@
+# supaya folder node_modules tidak ke tracking sama github 
+node_modules/
+*.env
+src/services/cache/

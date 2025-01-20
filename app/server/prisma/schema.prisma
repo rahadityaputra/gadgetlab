@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Favorite {
+  id Int      @id @default(autoincrement())
+  user_id     Int
+  device_id   String    @db.VarChar(255)
+  device_img  String    @db.VarChar(255)
+  device_name String    @db.VarChar(255)
+  createdAt   DateTime  @db.DateTime(0) @default(now())
+  updatedAt   DateTime? @db.DateTime(0) @default(now())
+  users       User      @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "favorites_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+  @@map("favorites")
+}
+
+model Review {
+  id   Int      @id @default(autoincrement())
+  review_date DateTime @db.Date
+  review_text String   @db.Text
+  device_id   String   @db.VarChar(255)
+  user_id     Int
+  rating      Int
+  createdAt   DateTime @db.DateTime(0)
+  updatedAt   DateTime @db.DateTime(0)
+  users      User    @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "reviews_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+  @@map("reviews")
+}
+
+model User {
+  id          Int         @id @default(autoincrement())
+  name        String      @db.VarChar(255) 
+  username    String      @unique(map: "username") @db.VarChar(255)
+  email       String      @unique(map: "email") @db.VarChar(255)
+  password    String      @db.VarChar(255)
+  isVerified  Boolean     @default(false)
+  createdAt   DateTime    @db.DateTime(0) @default(now())
+  updatedAt   DateTime?   @db.DateTime(0) @default(now())
+  favorites   Favorite[]
+  reviews     Review[]
+  @@map("users")
+}
+
+
+model Feedback {
+  id                Int         @id @default(autoincrement())
+  username          String      @unique(map: "username") @db.VarChar(255)
+  title             String      @db.VarChar(255)
+  feedback_text     String      @db.LongText
+  createdAt         DateTime    @db.DateTime(0)
+  updatedAt         DateTime    @db.DateTime(0)
+
+  @@map("feedbacks")
+}
