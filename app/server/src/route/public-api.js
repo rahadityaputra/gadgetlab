@@ -1,11 +1,9 @@
 import express from "express";
-import { authMiddleware } from "../middleware/auth-middleware.js";
 import userController from "../controller/user-controller.js";
 import deviceController from "../controller/device-controller.js";
 import brandController from "../controller/brand-controller.js";
 
 const publicRouter = express.Router();
-
 publicRouter.post("/api/users", userController.register);
 publicRouter.post(
   "/api/users/register/verify-verification-code",
@@ -16,7 +14,6 @@ publicRouter.post(
   "/api/users/login/verify-verification-code",
   userController.verifyLoginVerificationCode
 );
-
 publicRouter.get("/api/devices/popular", deviceController.getPopularDevices);
 publicRouter.get(
   "/api/devices/search",

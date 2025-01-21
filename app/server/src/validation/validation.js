@@ -86,4 +86,16 @@ const loginUserValidation = Joi.object({
     }),
 });
 
-export default { registerUserValidation, loginUserValidation };
+const reviewValidation = Joi.object({
+  rating: Joi.number().integer().min(1).max(5).required().messages({
+    "any.required": "Rating is required",
+  }),
+  review_text: Joi.string().min(0).max(1000).required().messages({
+    "string.empty": "Review text cannot be empty.",
+    "any.required": "Review text is required",
+    "string.min": "Review text must have at least {#limit} characters.",
+    "string.max": "Review text cannot exceed {#limit} characters.",
+  }),
+});
+
+export default { registerUserValidation, loginUserValidation , reviewValidation};

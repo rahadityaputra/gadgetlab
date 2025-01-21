@@ -2,6 +2,7 @@ import gsmarena from "gsmarena-api";
 import { ResponseError } from "../error/response-error.js";
 import mongoDbUtils from "../utils/mongoDbUtils.js";
 import pdfUtils from "../utils/pdfUtils.js";
+import { prisma } from "../configuration/prisma.js";
 
 const fetchAllPopularDevices = async () => {
   try {
@@ -96,9 +97,56 @@ const searchDevices = async (name) => {
   }
 };
 
+const getReviews = async (deviceId) => {
+  try {
+    const results = await prisma.review.findMany({
+      where : {
+        device_id : deviceId
+      },
+      select : {
+        id : true,
+        rating : true,
+        review_text : true,
+        device_id : true,
+        user_id : true,
+        users : {
+          select : {
+            username : true
+          }
+        }
+      }
+
+    })
+
+    return results;
+  } catch (error) {
+    throw new ResponseError(error.status, error.message);
+  }
+}
+
+const getAverageRating = async (deviceId) => {
+  try {
+    const averageRating = await prisma.review.aggregate({
+      _avg: {
+        rating: true,
+      },
+      where: {
+        device_id: deviceId,
+      },
+    });
+    console.log(averageRating);
+    
+    return averageRating;
+  } catch (error) {
+    throw new ResponseError(500, error.message);
+  }
+};
+
 export default {
   fetchAllPopularDevices,
   fetchDetailDevice,
   createFilePdfDetailDevice,
   searchDevices,
+  getReviews,
+  getAverageRating
 };

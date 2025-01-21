@@ -12,8 +12,8 @@ Request Body:
 
 ```json
 {
-  "rating": 5.0,
-  "review": "The device is excellent, but the battery life could be better."
+  "rating": 5,
+  "review_text": "The device is excellent, but the battery life could be better."
 }
 ```
 
@@ -22,11 +22,12 @@ Response Body Success :
 ```json
 {
   "data": {
-    "review_id": "1",
-    "user_id": "1",
-    "device_id": "xiaomi_12",
+    "reviewId": "1",
+    "userId": "1",
+    "deviceId": "xiaomi_12",
     "rating": 4.5,
-    "review": "The device is excellent, but the battery life could be better."
+    "review": "The device is excellent, but the battery life could be better.",
+    "review_date" : ""
   }
 }
 ```
@@ -102,7 +103,7 @@ Request Body :
 ```json
 {
   "rating": 4.0,
-  "review": "The device is excellent, but the battery life could be better."
+  "review_text": "The device is excellent, but the battery life could be better."
 }
 ```
 

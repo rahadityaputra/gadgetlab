@@ -10,20 +10,20 @@ const register = async (req, res, next) => {
 
   try {
     console.log("masuk sini");
-    
+
     const result = await userService.register(userData);
     console.log(result);
-    
+
     await userService.sendVerificationCode(result.email, result.id);
     res.status(200).json({
-      data : {
-        userId : result.id,
+      data: {
+        userId: result.id,
         message: "Verification code sent successfully",
-      }
+      },
     });
   } catch (error) {
     console.log(error);
-    
+
     next(error);
   }
 };
@@ -37,8 +37,8 @@ const login = async (req, res, next) => {
     await userService.sendVerificationCode(result.email, result.id);
     res.status(200).json({
       data: {
-        userId :result.id,
-        username :result.username,
+        userId: result.id,
+        username: result.username,
         message: "Verification code sent successfully",
       },
     });
@@ -48,9 +48,9 @@ const login = async (req, res, next) => {
 };
 
 const verifyLoginVerificationCode = async (req, res, next) => {
-  const {userId,username, code} = req.body;
+  const { userId, username, code } = req.body;
   console.log(userId, code);
-  
+
   try {
     await userService.verifyVerificationCode(code, userId);
     const token = await jwtUtlils.createToken(username);
@@ -62,7 +62,7 @@ const verifyLoginVerificationCode = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    
+
     next(error);
   }
 };
@@ -75,7 +75,7 @@ const verifyRegisterVerificationCode = async (req, res, next) => {
     await userService.verifyVerificationCode(code, userId);
     await userService.activedUserVerification(userId);
     console.log("sampe sini");
-    
+
     res.status(201).json({
       data: {
         userId,
@@ -150,6 +150,69 @@ const addFavorite = async (req, res, next) => {
   }
 };
 
+const addReview = async (req, res, next) => {
+  const { rating, review_text } = req.body;
+  const userId = parseInt(req.params.user_id);
+  const deviceId = req.params.device_id;
+  
+  try {
+    const result = await userService.addReview({
+      userId,
+      deviceId,
+      rating,
+      review_text
+    });
+
+    res.status(201).json({
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const deleteReview = async (req, res, next) => {
+  const userId = parseInt(req.params.user_id);
+  const reviewId = parseInt(req.params.review_id);
+
+  try {
+    const result = await userService.deleteReview({
+      userId,
+      reviewId,
+    });
+
+    res.status(200).json({
+      data: {
+        message: "Review successfully deleted",
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateReview = async (req, res, next) => {
+  const { rating, review_text } = req.body;
+  const userId = parseInt(req.params.user_id);
+  const reviewId = parseInt(req.params.review_id);
+
+  try {
+    const result = await userService.updateReview({
+      userId,
+      reviewId,
+      review_text,
+      rating,
+    });
+
+    res.status(200).json({
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
 export default {
   register,
   login,
@@ -159,4 +222,7 @@ export default {
   updateData,
   logout,
   addFavorite,
+  addReview,
+  deleteReview,
+  updateReview,
 };

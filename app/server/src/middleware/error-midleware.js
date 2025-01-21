@@ -25,13 +25,6 @@ const errorMiddleware = (err, req, res, next) => {
         errors: messages,
       })
       .end();
-  } else if (err.name === "JsonWebTokenError") {
-    res
-      .status(401)
-      .json({
-        errors: err.message,
-      })
-      .end();
   } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === "P2002") {
       console.error("Unique constraint failed on the field:", err.meta.target);

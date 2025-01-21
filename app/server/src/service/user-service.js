@@ -4,12 +4,12 @@ import { Otp } from "../model/otp-model.js";
 import cryptoUtils from "../utils/cryptoUtils.js";
 import mongoDbUtils from "../utils/mongoDbUtils.js";
 import nodemailerUtils from "../utils/nodemailerUtils.js";
+import { reviewValidation } from "../validation/review-validation.js";
 import { userValidation } from "../validation/user-validation.js";
 import validation from "../validation/validation.js";
 import bcrypt from "bcrypt";
 
 const register = async (request) => {
-  console.log(request);
   const user = await userValidation(validation.registerUserValidation, request);
 
   const userCount = await prisma.user.count({
@@ -43,7 +43,7 @@ const register = async (request) => {
 
 const login = async (request) => {
   try {
-    const user = await userValidation(validation.loginUserValidation, request);
+    const user = await validation(validation.loginUserValidation, request);
     const userCorrect = await prisma.user.findFirst({
       where: {
         email: user.email,
@@ -192,6 +192,109 @@ const activedUserVerification = async (userId) => {
   }
 };
 
+const addReview = async ({ userId, deviceId, rating, review_text }) => {
+  try {
+    await reviewValidation(validation.reviewValidation, {
+      review_text,
+      rating,
+    });
+    const result = await prisma.review.create({
+      data: {
+        rating: rating,
+        review_text: review_text,
+        device_id: deviceId,
+        user_id: userId,
+      },
+      select: {
+        id: true,
+        user_id: true,
+        device_id: true,
+        rating: true,
+        review_text: true,
+        createdAt: true,
+        users: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteReview = async ({ userId, reviewId }) => {
+  console.log(userId, reviewId);
+
+  try {
+    // Validasi kepemilikan review
+    const review = await prisma.review.findUnique({
+      where: {
+        id: reviewId,
+      },
+    });
+
+    if (!review) {
+      throw new ResponseError(404, "Review not found.");
+    }
+
+    if (review.user_id !== userId) {
+      throw new ResponseError(401, "You are not authorized to delete this review.");
+    }
+
+    const result = await prisma.review.delete({
+      where: {
+        id: reviewId,
+      },
+    });
+
+    return result;
+  } catch (error) {
+
+    throw error;
+  }
+};
+
+const updateReview = async ({ userId, reviewId, rating, review_text }) => {
+  try {
+    await reviewValidation(validation.reviewValidation, {
+      rating,
+      review_text,
+    });
+    const result = await prisma.review.update({
+      where: {
+        id: reviewId,
+        user_id: userId,
+      },
+      data: {
+        rating: rating,
+        review_text: review_text,
+      },
+
+      select: {
+        id: true,
+        rating: true,
+        review_text: true,
+        device_id: true,
+        users: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+
 export default {
   register,
   login,
@@ -201,4 +304,7 @@ export default {
   sendVerificationCode,
   verifyVerificationCode,
   activedUserVerification,
+  addReview,
+  deleteReview,
+  updateReview,
 };

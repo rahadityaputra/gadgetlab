@@ -8,12 +8,9 @@ const authMiddleware = async (req, res, next) => {
   try {
     const token = req.headers["authorization"]?.split(" ")[1];
     if (!token) {
-      console.log("token tidak ada");
       throw new ResponseError(401, "Access token missing");
     }
-
     const decoded = await jwtUtlils.verifyToken(token);
-
     req.user = decoded;
     next();
   } catch (err) {

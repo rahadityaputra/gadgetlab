@@ -2,3 +2,6 @@
 node_modules/
 *.env
 src/services/cache/
+note.txt
+test/
+prisma/migrations/

@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { ResponseError } from "../error/response-error";
 
 dotenv.config({
   path: "../../",
@@ -23,11 +24,10 @@ const createToken = (username) => {
 
 const verifyToken = (token) => {
   return new Promise((resolve, reject) => {
-    jwt.verify(token, process.env.JWT_SECRETKEY, (err, decoded) => {
-      if (err) {
-        return reject(err);
+    jwt.verify(token, process.env.JWT_SECRETKEY, (error, decoded) => {
+      if (error) {
+        return reject(new ResponseError(401, error.message));
       }
-
       resolve(decoded);
     });
   });
