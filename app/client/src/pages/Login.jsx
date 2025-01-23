@@ -1,4 +1,4 @@
-import React, { useCallback, useState , useContext} from "react";
+import React, { useCallback, useState, useContext } from "react";
 import LoginForm from "../components/LoginForm.jsx";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
@@ -6,9 +6,8 @@ import VerificationForm from "../components/VerificationForm.jsx";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext.jsx";
 
-
 const Login = () => {
-  const {login} = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [request, setRequest] = useState({
     userId: "",
@@ -19,10 +18,10 @@ const Login = () => {
   const [isVerificationCodeSubmitted, setIsVerificationCodeSubmitted] =
     useState(false);
 
-  const handleSubmitLoginForm = useCallback((userId) => {
-    setRequest((prevData) => ({
-      ...prevData,
+  const handleSubmitLoginForm = useCallback((userId, username) => {
+    setRequest(() => ({
       userId,
+      username,
     }));
 
     setIsSubmitForm(true);
@@ -31,7 +30,7 @@ const Login = () => {
   const handleSubmitVerificationCode = useCallback(() => {
     setIsVerificationCodeSubmitted(true);
     login();
-    navigate("/home");
+    navigate("/");
   }, []);
 
   const renderLoginBox = () => {
@@ -40,6 +39,7 @@ const Login = () => {
     }
 
     if (!isVerificationCodeSubmitted) {
+      console.log(request);
       return (
         <VerificationForm
           onSubmit={handleSubmitVerificationCode}

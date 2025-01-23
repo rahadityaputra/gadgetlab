@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { ResponseError } from "../error/response-error";
+import { ResponseError } from "../error/response-error.js";
 
 dotenv.config({
   path: "../../",

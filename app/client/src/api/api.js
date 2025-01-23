@@ -41,6 +41,8 @@ const verifyVerificationCode = async (request, code, action) => {
         break;
         case "login":
           console.log("ini login");
+          console.log(request);
+  
           response = await api.post(
             "/users/login/verify-verification-code",
             {
@@ -61,6 +63,7 @@ const verifyVerificationCode = async (request, code, action) => {
 const login = async (request) => {
   try {
     const response = await api.post("/users/login", request);
+    console.log(response);
     return response;
   } catch (error) {
     throw error;

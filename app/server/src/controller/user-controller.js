@@ -9,11 +9,7 @@ const register = async (req, res, next) => {
   console.log(userData);
 
   try {
-    console.log("masuk sini");
-
     const result = await userService.register(userData);
-    console.log(result);
-
     await userService.sendVerificationCode(result.email, result.id);
     res.status(200).json({
       data: {
@@ -30,8 +26,6 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   const userData = req.body;
-  console.log(userData);
-
   try {
     const result = await userService.login(userData);
     await userService.sendVerificationCode(result.email, result.id);
@@ -43,13 +37,15 @@ const login = async (req, res, next) => {
       },
     });
   } catch (error) {
+    console.log(error);
+
     next(error);
   }
 };
 
 const verifyLoginVerificationCode = async (req, res, next) => {
   const { userId, username, code } = req.body;
-  console.log(userId, code);
+  console.log("user id :", userId,", ini kodenya : " ,code);
 
   try {
     await userService.verifyVerificationCode(code, userId);
@@ -70,11 +66,11 @@ const verifyLoginVerificationCode = async (req, res, next) => {
 const verifyRegisterVerificationCode = async (req, res, next) => {
   const { userId, code } = req.body;
   console.log(userId, code);
-
+  
   try {
     await userService.verifyVerificationCode(code, userId);
+    await userService.setNotPendingVerification(userId);
     await userService.activedUserVerification(userId);
-    console.log("sampe sini");
 
     res.status(201).json({
       data: {
@@ -154,13 +150,13 @@ const addReview = async (req, res, next) => {
   const { rating, review_text } = req.body;
   const userId = parseInt(req.params.user_id);
   const deviceId = req.params.device_id;
-  
+
   try {
     const result = await userService.addReview({
       userId,
       deviceId,
       rating,
-      review_text
+      review_text,
     });
 
     res.status(201).json({
@@ -210,8 +206,6 @@ const updateReview = async (req, res, next) => {
     next(error);
   }
 };
-
-
 
 export default {
   register,

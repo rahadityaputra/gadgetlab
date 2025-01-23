@@ -13,7 +13,6 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendVerificationCode = async ({ code, to }) => {
-  console.log(to);
   try {
     const result = await transporter.sendMail({
       to : to,
@@ -23,6 +22,8 @@ const sendVerificationCode = async ({ code, to }) => {
 
     return result;
   } catch (error) {
+    console.log(error);
+    
     throw error;
   }
 };

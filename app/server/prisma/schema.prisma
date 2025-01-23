@@ -42,6 +42,7 @@ model User {
   email       String      @unique(map: "email") @db.VarChar(255)
   password    String      @db.VarChar(255)
   isVerified  Boolean     @default(false)
+  pendingVerification Boolean  @default(true)
   createdAt   DateTime    @db.DateTime(0) @default(now())
   updatedAt   DateTime?   @db.DateTime(0) @updatedAt
   favorites   Favorite[]

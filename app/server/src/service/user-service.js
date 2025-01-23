@@ -10,40 +10,54 @@ import validation from "../validation/validation.js";
 import bcrypt from "bcrypt";
 
 const register = async (request) => {
-  const user = await userValidation(validation.registerUserValidation, request);
+  try {
+    const user = await userValidation(
+      validation.registerUserValidation,
+      request
+    );
 
-  const userCount = await prisma.user.count({
-    where: {
-      OR: [{ username: user.username }, { email: user.email }],
-    },
-  });
+    // Cek keberadaan user berdasarkan username
+    const existingUser = await prisma.user.findUnique({
+      where: { username: user.username },
+    });
 
-  if (userCount === 1) {
-    throw new ResponseError(400, "Username or email already exists");
+    if (existingUser) {
+      // Jika user sudah diverifikasi, lempar error
+      if (existingUser.pendingVerification === false) {
+        throw new ResponseError(400, "Username or email already exists");
+      }
+
+      // Jika user belum diverifikasi, hapus record
+      await prisma.user.delete({
+        where: { id: existingUser.id },
+      });
+    }
+
+    user.password = await bcrypt.hash(user.password, 10);
+
+    const result = await prisma.user.create({
+      data: {
+        username: user.username,
+        email: user.email,
+        name: user.name,
+        password: user.password,
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        name: true,
+      },
+    });
+    return result;
+  } catch (error) {
+    throw error;
   }
-
-  user.password = await bcrypt.hash(user.password, 10);
-
-  const result = await prisma.user.create({
-    data: {
-      username: user.username,
-      email: user.email,
-      name: user.name,
-      password: user.password,
-    },
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      name: true,
-    },
-  });
-  return result;
 };
 
 const login = async (request) => {
   try {
-    const user = await validation(validation.loginUserValidation, request);
+    const user = await userValidation(validation.loginUserValidation, request);
     const userCorrect = await prisma.user.findFirst({
       where: {
         email: user.email,
@@ -56,6 +70,8 @@ const login = async (request) => {
         password: true,
       },
     });
+
+    console.log(userCorrect);
 
     if (!userCorrect) {
       throw new ResponseError(
@@ -156,6 +172,7 @@ const sendVerificationCode = async (email, user_id) => {
 };
 
 const verifyVerificationCode = async (verificationCode, userId) => {
+  console.log("ini adalah kode verif", verificationCode, "inin user id", userId)
   try {
     const result = await mongoDbUtils.findVerificationCode(
       verificationCode,
@@ -172,6 +189,23 @@ const verifyVerificationCode = async (verificationCode, userId) => {
     return result;
   } catch (error) {
     throw error;
+  }
+};
+
+const setNotPendingVerification = async (userId) => {
+  try {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        pendingVerification: false,
+      },
+    });
+
+    return;
+  } catch (error) {
+    throw new ResponseError(500, error.message);
   }
 };
 
@@ -242,7 +276,10 @@ const deleteReview = async ({ userId, reviewId }) => {
     }
 
     if (review.user_id !== userId) {
-      throw new ResponseError(401, "You are not authorized to delete this review.");
+      throw new ResponseError(
+        401,
+        "You are not authorized to delete this review."
+      );
     }
 
     const result = await prisma.review.delete({
@@ -253,7 +290,6 @@ const deleteReview = async ({ userId, reviewId }) => {
 
     return result;
   } catch (error) {
-
     throw error;
   }
 };
@@ -293,8 +329,6 @@ const updateReview = async ({ userId, reviewId, rating, review_text }) => {
   }
 };
 
-
-
 export default {
   register,
   login,
@@ -304,6 +338,7 @@ export default {
   sendVerificationCode,
   verifyVerificationCode,
   activedUserVerification,
+  setNotPendingVerification,
   addReview,
   deleteReview,
   updateReview,

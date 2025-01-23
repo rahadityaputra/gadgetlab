@@ -26,16 +26,16 @@ const LoginForm = ({ onSubmit }) => {
     setIsLoading(true);
     e.preventDefault();
     try {
-      console.log(formData);
+      // console.log(formData);
       const response = await api.login(formData);
       const userId = response.data.data.userId;
-      onSubmit(userId);
+      const username = response.data.data.username;      
+      onSubmit(userId, username);
     } catch (errors) {
       console.log(errors);
-      
+
       setErrors(errors.response.data.errors);
     } finally {
-      
       setIsLoading(false);
     }
   };

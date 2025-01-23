@@ -43,13 +43,13 @@ const VerificationForm = ({ request, onSubmit , action}) => {
     }
   };
 
-  // Handle input focus
-  const handleFocus = (e) => {
-    e.target.select();
-  };
+  // // Handle input focus
+  // const handleFocus = (e) => {
+  //   e.target.select();
+  // };
 
-  // Handle input blur
-  const handleBlur = () => {};
+  // // Handle input blur
+  // const handleBlur = () => {};
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -57,6 +57,8 @@ const VerificationForm = ({ request, onSubmit , action}) => {
     setIsLoading(true);
     const verificationCode = code.join("");
     try {
+      console.log("ini di handle submit", request);
+      
       console.log(verificationCode);
       const response = await api.verifyVerificationCode(
         request,
@@ -90,8 +92,8 @@ const VerificationForm = ({ request, onSubmit , action}) => {
               index={index}
               value={digit}
               onChange={handleInputChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
+              // onFocus={handleFocus}
+              // onBlur={handleBlur}
             />
           ))}
         </div>

@@ -3,16 +3,12 @@ import Navbar from "../components/Navbar.jsx";
 import Hero from "../components/Hero.jsx";
 import Footer from "../components/Footer.jsx";
 import PopularDevices from "../components/PopularDevice.jsx";
-import { useAuth } from "../Contexts/AuthContext.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
 
 
 const Home = () => {
-  // const { isLoggedIn } = useAuth;
-  const isLoggedIn = true;
-
-
-
+  const { isLoggedIn } = useAuth();
   return (
     <>
       <Navbar isLoggedIn={isLoggedIn} />
