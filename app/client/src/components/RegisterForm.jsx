@@ -14,7 +14,7 @@ const RegisterForm = ({ onSubmit }) => {
     passwordConfirmation: "",
   });
 
-  const [errors, setErrors] = useState([]);
+  const [errorMessages, setErrorMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -25,6 +25,7 @@ const RegisterForm = ({ onSubmit }) => {
     }));
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -32,16 +33,33 @@ const RegisterForm = ({ onSubmit }) => {
     try {
       const response = await api.register(formData);
       const userId = response.data.data.userId;
-      if (response.status === 200) {
+
         onSubmit(userId);
         return;
-      }
     } catch (error) {
-      setErrors(error.response.data.errors);
+      const newErrors = error.response.data.errors;
+      setErrorMessages(newErrors);
     } finally {
       setIsLoading(false);
     }
   };
+
+
+  const handleClick = (e) => {
+      const password = document.getElementById("password");
+      const passwordConfirmation = document.getElementById("passwordConfirmation");
+      
+      if(e.target.checked) {
+        password.type = "text";
+        passwordConfirmation.type = "text";
+
+      } else {
+
+        password.type = "password";
+        passwordConfirmation.type = "password";
+
+      }
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -68,7 +86,7 @@ const RegisterForm = ({ onSubmit }) => {
               htmlFor="username"
               className="block text-gray-700 font-medium"
             >
-              Username
+
             </label>
             <input
               type="text"
@@ -107,6 +125,8 @@ const RegisterForm = ({ onSubmit }) => {
               className="w-full border border-gray-300 rounded-md p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Create a password"
             />
+                
+	  	
           </div>
           <div className="mb-4">
             <label
@@ -123,9 +143,14 @@ const RegisterForm = ({ onSubmit }) => {
               className="w-full border border-gray-300 rounded-md p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Confirm your password"
             />
-          </div>
+            
 
-          {errors.length !== 0 && <ShowErrorAlert errors={errors} />}
+          </div>
+      <div>
+        <input type="checkbox" id="togglePassword" onClick={handleClick}/>
+        <label className="mx-3" htmlFor="togglePassword">Show Password</label>
+      </div>
+         {errorMessages.length !== 0 && <ShowErrorAlert messages={errorMessages} />}
 
           <button
             type="submit"

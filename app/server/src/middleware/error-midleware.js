@@ -9,10 +9,12 @@ const errorMiddleware = (err, req, res, next) => {
     return;
   }
   if (err instanceof ResponseError) {
+    const errors = [err.message];
+    
     res
       .status(err.status)
       .json({
-        errors: err.message,
+        errors
       })
       .end();
   } else if (err instanceof Joi.ValidationError) {
@@ -27,19 +29,15 @@ const errorMiddleware = (err, req, res, next) => {
       .end();
   } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === "P2002") {
-      console.error("Unique constraint failed on the field:", err.meta.target);
-        res
+     res
       .status(500)
       .json({
         errors: `Unique constraint failed on the field:", ${err.meta.target}`,
       })
       .end();
-    } else {
-      console.error("Database error:", err.message);
     }
   } else if (err instanceof Prisma.PrismaClientValidationError) {
     // Error validasi data Prisma
-    console.error("Validation error:", err.message);
   } else {
     res
       .status(500)

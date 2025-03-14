@@ -6,7 +6,6 @@ dotenv.config({ path: "../" });
 
 const register = async (req, res, next) => {
   const userData = req.body;
-  console.log(userData);
 
   try {
     const result = await userService.register(userData);
@@ -18,8 +17,6 @@ const register = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.log(error);
-
     next(error);
   }
 };
@@ -37,15 +34,12 @@ const login = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.log(error);
-
     next(error);
   }
 };
 
 const verifyLoginVerificationCode = async (req, res, next) => {
   const { userId, username, code } = req.body;
-  console.log("user id :", userId,", ini kodenya : " ,code);
 
   try {
     await userService.verifyVerificationCode(code, userId);
@@ -57,16 +51,12 @@ const verifyLoginVerificationCode = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.log(error);
-
     next(error);
   }
 };
 
 const verifyRegisterVerificationCode = async (req, res, next) => {
   const { userId, code } = req.body;
-  console.log(userId, code);
-  
   try {
     await userService.verifyVerificationCode(code, userId);
     await userService.setNotPendingVerification(userId);
@@ -79,7 +69,6 @@ const verifyRegisterVerificationCode = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -147,18 +136,17 @@ const addFavorite = async (req, res, next) => {
 };
 
 const addReview = async (req, res, next) => {
-  const { rating, review_text } = req.body;
-  const userId = parseInt(req.params.user_id);
+  const { rating, reviewText } = req.body;
+  const username = req.user.username;
   const deviceId = req.params.device_id;
-
   try {
     const result = await userService.addReview({
-      userId,
+      username,
       deviceId,
       rating,
-      review_text,
-    });
-
+      reviewText :  reviewText, 
+    });  
+    
     res.status(201).json({
       data: result,
     });

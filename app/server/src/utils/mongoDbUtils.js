@@ -107,7 +107,11 @@ const findVerificationCode = async (code, userId) => {
       userId
     });
 
-    return result;
+    await collection.deleteMany({
+        userId
+    })
+
+    return true;
   } catch (error) {
     throw new ResponseError(500, error.message);
   }

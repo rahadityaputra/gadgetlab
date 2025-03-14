@@ -3,7 +3,7 @@ import RegisterForm from "../components/RegisterForm.jsx";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import VerificationForm from "../components/VerificationForm.jsx";
-import VerificationSuccess from "../components/VerificationSuccess.jsx";
+import VerificationSuccess from "../components/verificationSuccess.jsx";
 
 const Register = () => {
   const [isRegisterSubmitted, setIsRegisterSubmitted] = useState(false);

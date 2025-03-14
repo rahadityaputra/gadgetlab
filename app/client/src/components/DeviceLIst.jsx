@@ -9,7 +9,9 @@ const DeviceList = ({ devices }) => {
       <div className="flex flex-wrap gap-6 justify-center">
         {devices.map((device, index) => (
           <DeviceCard
+
             key={index}
+            id={device.id}
             name={device.name}
             favorites={device.favorites}
           />

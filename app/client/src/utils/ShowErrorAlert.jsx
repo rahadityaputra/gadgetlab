@@ -7,7 +7,6 @@ const ShowErrorAlert = ({ messages }) => {
         <AlertError key={index} message={message} />
       ));
     }
-    return <AlertError message={messages} />;
   };
 
 

@@ -11,10 +11,12 @@ const registerUserValidation = Joi.object({
   }),
 
   email: Joi.string()
-    .email({ tlds: { allow: ["com"] } })
+    .email()
+    .pattern(/^[a-zA-Z0-9._%+-]+@gmail\.com$/i)
     .required()
     .messages({
       "string.base": "Email must be a text.",
+      "string.pattern.base" : "Email must be a Gmail address (example@gmail.com)",
       "string.email": "Email must end with .com and be in a valid format.",
       "string.empty": "Email cannot be empty.",
       "any.required": "Email is required.",

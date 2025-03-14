@@ -2,7 +2,7 @@
 
 ## Add Review API
 
-Endpoint : POST /api/users/:user_id/devices/:device_id/reviews/
+Endpoint : POST /api/users/current/devices/:device_id/reviews/
 
 Request Header :
 
@@ -13,7 +13,7 @@ Request Body:
 ```json
 {
   "rating": 5,
-  "review_text": "The device is excellent, but the battery life could be better."
+  "reviewText": "The device is excellent, but the battery life could be better."
 }
 ```
 

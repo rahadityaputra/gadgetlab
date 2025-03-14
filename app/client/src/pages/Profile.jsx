@@ -1,22 +1,37 @@
-import React from "react";
+import React, { useState , useEffect} from "react";
 import Navbar from "../components/Navbar.jsx";
-import Hero from "../components/Hero.jsx";
 import Footer from "../components/Footer.jsx";
-import PopularDevices from "../components/PopularDevice.jsx";
-import { useAuth } from "../Contexts/AuthContext.jsx";
 import ProfileBox from "../components/ProfileBox.jsx";
-
-
+import api from "../api/api.js";
 
 const Profile = () => {
-  // const { isLoggedIn } = useAuth;
-  const isLoggedIn = true;
+  console.log("ini di page profile");
+    
+  const [user, setUser] = useState({
+    username : "loading",
+    name : "loading",
+    email : "loading",
+    id : "loading"
+  });
+
+  useEffect(() => {
+      const fetchUserData = async () => {
+          try {
+              const user = await api.getUserData();
+              setUser(user);
+          } catch (error) {
+            console.log(error.response);
+          }
+      }
+
+      fetchUserData();
+  }, [])
 
 
   return (
     <>
-      <Navbar isLoggedIn={isLoggedIn} />
-      <ProfileBox/>
+      <Navbar/>
+      <ProfileBox user={user}/>
       <Footer />
     </>
   );

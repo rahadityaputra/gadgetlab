@@ -11,8 +11,11 @@ const getPopularDevices = async (req, res, next) => {
   }
 };
 
-const getDetailDevice = async (req, res, next) => {
+const getDeviceDetail = async (req, res, next) => {
+    console.log("fungtion ini dipanggil");
+    console.log(req.params);
   const deviceId = req.params.id;
+;
   try {
     const result = await deviceService.fetchDetailDevice(deviceId);
     res.status(200).json({
@@ -83,7 +86,7 @@ const getAverageRating = async (req, res, next) => {
 
 export default {
   getPopularDevices,
-  getDetailDevice,
+  getDeviceDetail,
   getPdfFileDetailDevice,
   getResultSearchDevices,
   getReviews,

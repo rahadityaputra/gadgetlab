@@ -15,6 +15,7 @@ const Login = () => {
   });
 
   const [isSubmitFrom, setIsSubmitForm] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isVerificationCodeSubmitted, setIsVerificationCodeSubmitted] =
     useState(false);
 
@@ -27,19 +28,18 @@ const Login = () => {
     setIsSubmitForm(true);
   }, []);
 
-  const handleSubmitVerificationCode = useCallback(() => {
+  const handleSubmitVerificationCode = useCallback((token) => {
     setIsVerificationCodeSubmitted(true);
-    login();
+    login(token);
     navigate("/");
   }, []);
 
   const renderLoginBox = () => {
     if (!isSubmitFrom) {
-      return <LoginForm onSubmit={handleSubmitLoginForm} />;
+      return <LoginForm onSubmit={handleSubmitLoginForm} onForgotPassword={handleForgotPassword}/>;
     }
 
     if (!isVerificationCodeSubmitted) {
-      console.log(request);
       return (
         <VerificationForm
           onSubmit={handleSubmitVerificationCode}
@@ -48,7 +48,23 @@ const Login = () => {
         />
       );
     }
+
+    if (isForgotPassword) {
+       return (
+        <VerificationForm
+          onSubmit={handleSubmitVerificationCode}
+          request={request}
+          action={"change-password"}
+        />
+      );
+
+    }
   };
+
+  const handleForgotPassword = (email) => {
+    setIsForgotPassword(true);
+  }
+
 
   return (
     <>

@@ -11,6 +11,7 @@ const authMiddleware = async (req, res, next) => {
       throw new ResponseError(401, "Access token missing");
     }
     const decoded = await jwtUtlils.verifyToken(token);
+    console.log(decoded);
     req.user = decoded;
     next();
   } catch (err) {

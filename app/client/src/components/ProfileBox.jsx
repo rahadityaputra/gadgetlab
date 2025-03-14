@@ -1,22 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const ProfileBox = () => {
-  const user = {
-    name: "Rahaditya",
-    username: "rahaditya123",
-    email: "wkwk@gmail.com",
-  };
-
+const ProfileBox = ({user}) => {
+  
   const navigate = useNavigate();
-
   const handleLogout = () => {
-    // Logout logika bisa ditambahkan di sini
-    navigate("/"); // Arahkan kembali ke halaman beranda
+    navigate("/"); 
   };
 
   const handleChangePassword = () => {
-    // Navigasi ke halaman ubah password
     navigate("/change-password");
   };
 

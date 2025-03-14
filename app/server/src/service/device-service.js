@@ -58,10 +58,10 @@ const createFilePdfDetailDevice = async (id) => {
     device = await fetchDetailDevice(id);
     const pdf = await pdfUtils.createPdf(device);
 
-    // Memastikan PDF adalah stream atau buffer yang dapat diproses
     if (!pdf || typeof pdf.pipe !== "function") {
       throw new Error("Failed to generate PDF");
     }
+
     return pdf;
   } catch (error) {
     throw new ResponseError(error.status, error.message);

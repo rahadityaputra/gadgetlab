@@ -15,21 +15,25 @@ const register = async (request) => {
       validation.registerUserValidation,
       request
     );
-
-    // Cek keberadaan user berdasarkan username
-    const existingUser = await prisma.user.findUnique({
-      where: { username: user.username },
+    const existingUsername = await prisma.user.findUnique({
+      where: { 
+        username: user.username
+      },
     });
 
-    if (existingUser) {
-      // Jika user sudah diverifikasi, lempar error
-      if (existingUser.pendingVerification === false) {
+    const existingEmail = await prisma.user.findUnique({
+      where: { 
+        email: user.email
+      },
+    });
+
+    if (existingUsername || existingEmail) {
+      if (existingUsername?.pendingVerification === false || existingEmail?.pendingVerification === false) {
         throw new ResponseError(400, "Username or email already exists");
       }
 
-      // Jika user belum diverifikasi, hapus record
       await prisma.user.delete({
-        where: { id: existingUser.id },
+        where: { id: existingUsername.id || existingEmail.id}
       });
     }
 
@@ -71,7 +75,6 @@ const login = async (request) => {
       },
     });
 
-    console.log(userCorrect);
 
     if (!userCorrect) {
       throw new ResponseError(
@@ -99,7 +102,7 @@ const getUserData = async (username) => {
   try {
     const result = await prisma.user.findUnique({
       where: {
-        username,
+        username : username,
       },
       select: {
         id: true,
@@ -159,7 +162,6 @@ const addFavorite = async (user_id, { device_id, device_name, device_img }) => {
 };
 
 const sendVerificationCode = async (email, user_id) => {
-  console.log(email);
   const code = cryptoUtils.generateVerificationCode();
   const otp = new Otp(code, user_id);
   try {
@@ -172,17 +174,12 @@ const sendVerificationCode = async (email, user_id) => {
 };
 
 const verifyVerificationCode = async (verificationCode, userId) => {
-  console.log("ini adalah kode verif", verificationCode, "inin user id", userId)
   try {
     const result = await mongoDbUtils.findVerificationCode(
       verificationCode,
       userId
     );
-    console.log(result);
-
     if (!result) {
-      console.log("wkwkwkk");
-
       throw new ResponseError(400, "Verification code is incorrect.");
     }
 
@@ -226,18 +223,30 @@ const activedUserVerification = async (userId) => {
   }
 };
 
-const addReview = async ({ userId, deviceId, rating, review_text }) => {
+const addReview = async ({ username, deviceId, rating, reviewText }) => {
   try {
+
     await reviewValidation(validation.reviewValidation, {
-      review_text,
+      review_text : reviewText,
       rating,
     });
+
+    const user = await prisma.user.findUnique({
+      where : {
+        username
+      },
+
+      select : {
+        id : true
+      }
+    })
+
     const result = await prisma.review.create({
       data: {
         rating: rating,
-        review_text: review_text,
+        review_text: reviewText,
         device_id: deviceId,
-        user_id: userId,
+        user_id : user.id
       },
       select: {
         id: true,
@@ -261,7 +270,6 @@ const addReview = async ({ userId, deviceId, rating, review_text }) => {
 };
 
 const deleteReview = async ({ userId, reviewId }) => {
-  console.log(userId, reviewId);
 
   try {
     // Validasi kepemilikan review

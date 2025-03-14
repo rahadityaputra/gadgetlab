@@ -19,7 +19,7 @@ publicRouter.get(
   "/api/devices/search",
   deviceController.getResultSearchDevices
 );
-publicRouter.get("/api/devices/:id", deviceController.getDetailDevice);
+publicRouter.get("/api/devices/:id", deviceController.getDeviceDetail);
 publicRouter.get(
   "/api/devices/:id/export",
   deviceController.getPdfFileDetailDevice
