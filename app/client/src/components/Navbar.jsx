@@ -2,34 +2,95 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {  } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext.jsx";
+import api from "../api/api.js";
 
 const Navbar = () => {
   const { isLoggedIn } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [searchResults, setSearchResult] = useState([]);
+
   const navigate = useNavigate();
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  const bounceSearch = (delay, func) => {
+    let timer;
+
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(this, args), delay);
+    }
+  }
+
+
+
+  const performSearch = async () =>  {
+    const devicesSearchInput = document.getElementById("devices-search-input");
+    const name = devicesSearchInput.value;
+
+    try {
+      const response = await api.searchDevices(name);
+      setSearchResult(response);
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+  const debouncedSearch = bounceSearch(1000, performSearch);
+  const handleSearchInput = () => {
+    debouncedSearch();
+  }
   
 
+  const displaySearchResult = () => {
+
+  }
+
   return (
-    <nav className="bg-gray-800 text-white sticky top-0">
+    <nav className="bg-gray-800 sticky top-0" style={{zIndex:"9999"}}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold">Gadget Lab</h1>
+            <h1 className="text-2xl font-bold  text-white">Gadget Lab</h1>
           </div>
 
           {/* Search Bar */}
-          <div className="flex-1 mx-4">
-            <input
-              type="text"
-              placeholder="Search gadgets..."
-              className="w-full bg-gray-700 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <div className="flex-1 mx-4 relative">
+              <input
+                onInput={handleSearchInput}
+                id="devices-search-input"
+                type="text"
+                placeholder="Search gadgets..."
+                className="w-full bg-gray-700 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+
+              {/* Hasil Pencarian */}
+              {searchResults.length > 0 && (
+                <div className="absolute w-md text-black bg-white rounded-md mt-2 shadow-lg">
+                  {searchResults.map((result, index) => (
+                    <div
+                      key={index}
+                      className="px-4 py-2 cursor-pointer flex"
+                    >
+                      {/* Image */}
+                      <img src={result.img} alt={result.name} className="w-16 h-16 object-cover rounded-md mr-4" />
+
+                      {/* Device Name */}
+                      <div className="flex flex-col">
+                        <span className="font-semibold">{result.name}</span>
+                        <span className="hidden md:inline">{result.description}</span>
+                      </div>
+
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+          
 
           {/* Hamburger Button */}
           <div className="md:hidden">

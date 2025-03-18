@@ -7,13 +7,23 @@ const api = axios.create({
 
 const getPopularDevices = async () => {
   try {
-    const respose = await api.get("/devices/popular");
-    const devices = respose.data.data;
+    const response = await api.get("/devices/popular");
+    const devices = response.data.data;
     return devices;
   } catch (error) {
     throw error;
   }
 };
+
+
+const searchDevices = async (name) => {
+  try {
+    const response = await api.get(`/devices/search?name=${name}`)
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+}
 
 const getPdfFileDetailDevice = async (device_id) => {
   try {
@@ -152,5 +162,6 @@ export default {
   getDeviceDetail,
   getPdfFileDetailDevice,
   addReview,
+  searchDevices,
   getDeviceReviews
 };
