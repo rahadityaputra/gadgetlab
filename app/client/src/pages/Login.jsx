@@ -34,7 +34,22 @@ const Login = () => {
     navigate("/");
   }, []);
 
+  const handleForgotPassword = useCallback((email) => {
+    console.log("ppppp")
+    setIsForgotPassword(true);
+  }, []);
+
   const renderLoginBox = () => {
+    if (isForgotPassword) {
+       return (
+        <VerificationForm
+          onSubmit={handleSubmitVerificationCode}
+          request={request}
+          action={"change-password"}
+        />
+      );
+
+    }
     if (!isSubmitFrom) {
       return <LoginForm onSubmit={handleSubmitLoginForm} onForgotPassword={handleForgotPassword}/>;
     }
@@ -49,29 +64,15 @@ const Login = () => {
       );
     }
 
-    if (isForgotPassword) {
-       return (
-        <VerificationForm
-          onSubmit={handleSubmitVerificationCode}
-          request={request}
-          action={"change-password"}
-        />
-      );
-
-    }
-  };
-
-  const handleForgotPassword = (email) => {
-    setIsForgotPassword(true);
-  }
+ };
 
 
   return (
-    <>
+    <div> 
       <Navbar />
       {renderLoginBox()}
       <Footer />
-    </>
+    </div>
   );
 };
 

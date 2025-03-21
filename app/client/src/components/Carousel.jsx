@@ -1,51 +1,45 @@
-import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import DeviceCard from "./DeviceCard.jsx";
+import PropTypes from "prop-types";
 
 const Carousel = ({ devices }) => {
-  const swiperStyle = {
-    backdropFilter: "blur(1px) saturate(180%)",
-    WebkitBackdropFilter: "blur(1px) saturate(180%)",
-    backgroundColor: "rgba(255, 255, 255, 0.17)",
-    borderRadius: "12px",
-    border: "1px solid rgba(209, 213, 219, 0.3)",
-  };
+  console.log(devices.length)
   return (
     <div
-      style={{
-        width: "750px",
-        margin: "auto",
-        padding: "20px",
-        height: "400px",
-      }}
+     className="w-full flex justify-center items-center"
     >
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
-        spaceBetween={10}
-        slidesPerView={2}
+        spaceBetween={1}
+        centeredSlides={true} 
         loop={true}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
         navigation
         pagination={{ clickable: true }}
-        className="bg-white h-full"
-        style={swiperStyle}
+        breakpoints={{
+          500: {slidesPerView: 2},
+          640: { slidesPerView: 3 }, 
+          1024: { slidesPerView: 4 },
+          1280: { slidesPerView: 6}, 
+        }}
       >
-        {devices.map((device, index) => (
-          <SwiperSlide key={index}>
-            <DeviceCard
-              id={device.id}
-              name={device.name}
-              favorites={device.favorites}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
+        {devices.map((device, index) => {
+          console.log(device)          
+          return <SwiperSlide key={index} className="">
+                    <DeviceCard id={device.id} name={device.name} favorites={device.favorites} />
+                </SwiperSlide>
+        })}
+      </Swiper >
+    </div >
   );
 };
+
+Carousel.propTypes = {
+  devices: PropTypes.array.isRequired,
+}
 
 export default Carousel;

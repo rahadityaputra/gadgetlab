@@ -49,7 +49,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-gray-800 sticky top-0" style={{zIndex:"9999"}}>
+    <nav className=" sticky top-0" style={{zIndex:"9999"}}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -121,7 +121,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             <a
               onClick={() => navigate("/")}
-              className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
+              className="hover:bg-gray-700 text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
             >
               Home
             </a>

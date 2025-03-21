@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
@@ -9,6 +9,7 @@ import SyncLoader from "react-spinners/SyncLoader";
 
 const Device = () => {
       const [deviceDetail, setDeviceDetail] = useState({id:undefined, name:undefined, img:undefined, detailSpec:undefined});
+
       const [isFinishedFetch, setIsFinishedFetch] = useState(false);
       const [isLoading, setIsLoading] = useState(false);
       const {device_id}= useParams();

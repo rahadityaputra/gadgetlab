@@ -50,13 +50,16 @@ const LoginForm = ({ onSubmit , onForgotPassword}) => {
   }
 
   const handleClickForgotPassword = () => {
-    console.log("ppppp")
     const email = formData.email;
+    if (email == "") {
+      setErrors(["The email field is required"])
+      return;
+    }
     onForgotPassword(email);
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center  bg-[url(/bg-1.jpg)]">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-grey-800 mb-4 text-center">
           Login
@@ -94,7 +97,7 @@ const LoginForm = ({ onSubmit , onForgotPassword}) => {
                 <input type="checkbox" id="togglePassword" onClick={handleClick}/>
                 <label className="mx-3" htmlFor="togglePassword">Show Password</label>
               </div>
-              <a className="mx-3 text-blue-500 hover:underline" onClick={handleClickForgotPassword}>Forgot Password</a>
+              <a className="mx-3 text-blue-500 hover:underline cursor-pointer" onClick={handleClickForgotPassword}>Forgot Password</a>
             </div>
          
 
