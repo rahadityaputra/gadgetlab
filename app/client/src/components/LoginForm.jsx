@@ -3,7 +3,7 @@ import api from "../api/api.js";
 import ShowErrorAlert from "../utils/ShowErrorAlert.jsx";
 import SyncLoader from "react-spinners/SyncLoader";
 
-const LoginForm = ({ onSubmit , onForgotPassword}) => {
+const LoginForm = ({ onSubmit, onForgotPassword }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,15 +22,13 @@ const LoginForm = ({ onSubmit , onForgotPassword}) => {
     });
   };
 
- 
-
   const handleOnSubmit = async (e) => {
     setIsLoading(true);
     e.preventDefault();
     try {
       const response = await api.login(formData);
       const userId = response.data.data.userId;
-      const username = response.data.data.username;      
+      const username = response.data.data.username;
       onSubmit(userId, username);
     } catch (errors) {
       setErrors(errors.response.data.errors);
@@ -40,26 +38,25 @@ const LoginForm = ({ onSubmit , onForgotPassword}) => {
   };
 
   const handleClick = (e) => {
-      const password = document.getElementById("password");
-      if(e.target.checked) {
-        password.type = "text";
-      } else {
-        password.type = "password";
-
-      }
-  }
+    const password = document.getElementById("password");
+    if (e.target.checked) {
+      password.type = "text";
+    } else {
+      password.type = "password";
+    }
+  };
 
   const handleClickForgotPassword = () => {
     const email = formData.email;
     if (email == "") {
-      setErrors(["The email field is required"])
+      setErrors(["The email field is required"]);
       return;
     }
     onForgotPassword(email);
-  }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center  bg-[url(/bg-1.jpg)]">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-grey-800 mb-4 text-center">
           Login
@@ -91,15 +88,25 @@ const LoginForm = ({ onSubmit , onForgotPassword}) => {
               className="w-full border border-gray-300 rounded-md p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
             />
+          </div>
+          <div className="flex justify-between">
+            <div>
+              <input
+                type="checkbox"
+                id="togglePassword"
+                onClick={handleClick}
+              />
+              <label className="mx-3" htmlFor="togglePassword">
+                Show Password
+              </label>
             </div>
-            <div className="flex justify-between">
-              <div>
-                <input type="checkbox" id="togglePassword" onClick={handleClick}/>
-                <label className="mx-3" htmlFor="togglePassword">Show Password</label>
-              </div>
-              <a className="mx-3 text-blue-500 hover:underline cursor-pointer" onClick={handleClickForgotPassword}>Forgot Password</a>
-            </div>
-         
+            <a
+              className="mx-3 text-blue-500 hover:underline cursor-pointer"
+              onClick={handleClickForgotPassword}
+            >
+              Forgot Password
+            </a>
+          </div>
 
           {errors.length !== 0 && <ShowErrorAlert messages={errors} />}
           <button

@@ -10,7 +10,7 @@ import { useAuth } from "../contexts/AuthContext.jsx";
 const Home = () => {
   const { isLoggedIn } = useAuth();
   return (
-    <div className="bg-[url(/bg-1.jpg)] bg-center">
+    <div className="bg-center">
       <Navbar isLoggedIn={isLoggedIn} />
       <Hero />
       <div className="p-6 min-h-screen">

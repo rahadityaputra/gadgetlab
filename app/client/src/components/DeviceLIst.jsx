@@ -1,27 +1,20 @@
-import DeviceCard from './DeviceCard.jsx';
-import PropTypes from "prop-types";
+import DeviceCard from "./DeviceCard.jsx";
+
 const DeviceList = ({ devices }) => {
-
   return (
-    <div className="my-8 w-full">
-      {/* <h2 className="text-2xl font-bold text-gray-800 mb-4">Popular Devices</h2> */}
-      <div className="flex flex-wrap gap-6 justify-center">
-        {devices.map((device, index) => (
+    <section className="py-12 bg-white">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-items-center">
+        {devices.map((device) => (
           <DeviceCard
-
-            key={index}
+            key={device.id}
             id={device.id}
             name={device.name}
             favorites={device.favorites}
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 };
-
-DeviceList.propTypes = {
-  devices: PropTypes.array.isRequired,
-}
 
 export default DeviceList;

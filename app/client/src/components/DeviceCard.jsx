@@ -7,7 +7,7 @@ const DeviceCard = ({ id, name, favorites }) => {
   return (
     <div
       onClick={() => navigate(`/device/${id}`)}
-      className="border border-red-500 p-5 bg-white shadow-md rounded-lg h-[300px] w-[200px] text-center cursor-pointer"
+      className="flex flex-col justify-center border border-red-500 p-5 bg-white shadow-md rounded-lg h-[300px] w-[200px] text-center cursor-pointer"
     >
       <h3 className="text-lg font-semibold text-black drop-shadow-md">
         {name || "Unknown Device"}
